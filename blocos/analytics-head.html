@@ -1,0 +1,116 @@
+<!-- ==========================================================================
+     BLOCO DE MEDIÇÃO — cole VERBATIM dentro do <head>, o mais alto possível.
+     Não reescreva, não reordene, não "melhore". A ordem aqui é significativa.
+
+     Arquitetura: o GTM é o contêiner único. GA4, Google Ads e Clarity são
+     disparados DENTRO dele. Se a página carregasse o GTM e as tags diretas ao
+     mesmo tempo, cada pageview e cada conversão seriam contados duas vezes.
+
+     Substitua os placeholders conforme CONFIGURACAO-ANALYTICS.md.
+     ========================================================================== -->
+
+<!-- 1. Search Console — verificação de propriedade.
+     É meta tag: não passa por gerenciador de tags. -->
+<meta name="google-site-verification" content="[TOKEN_SEARCH_CONSOLE]">
+
+<!-- 2. dataLayer e Consent Mode v2.
+     Precisa vir ANTES de qualquer tag. O Consent Mode declarado depois do GTM
+     não governa nada — as tags já dispararam. -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+
+  // Regiões que exigem consentimento prévio: nega por padrão e espera a resposta.
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    functionality_storage: 'denied',
+    personalization_storage: 'denied',
+    security_storage: 'granted',
+    region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'],
+    wait_for_update: 500
+  });
+
+  // Demais regiões, incluindo o Brasil. A LGPD admite legítimo interesse para
+  // medição; se você optar por banner de consentimento também no Brasil, troque
+  // os 'granted' abaixo por 'denied' e atualize via gtag('consent','update',…).
+  gtag('consent', 'default', {
+    ad_storage: 'granted',
+    ad_user_data: 'granted',
+    ad_personalization: 'granted',
+    analytics_storage: 'granted',
+    functionality_storage: 'granted',
+    personalization_storage: 'granted',
+    security_storage: 'granted'
+  });
+
+  dataLayer.push({ event: 'consent_default_definido' });
+</script>
+
+<!-- 3. Google Tag Manager.
+     O carregador só injeta o script quando o ID já foi substituído por um real.
+     Com o placeholder ainda no lugar, o dataLayer continua funcionando e os
+     eventos continuam sendo empurrados — só não há requisição de rede quebrada. -->
+<script>
+(function(w,d,s,l,i){
+  if (!i || /^GTM-X+$/i.test(i)) {
+    w[l] = w[l] || [];
+    w[l].push({ event: 'gtm_nao_configurado', aviso: 'Substitua GTM-XXXXXXX pelo ID real do contêiner.' });
+    if (w.console && console.info) console.info('[medição] GTM ainda não configurado — dataLayer ativo, contêiner não carregado.');
+    return;
+  }
+  w[l] = w[l] || [];
+  w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+  var f = d.getElementsByTagName(s)[0],
+      j = d.createElement(s),
+      dl = l != 'dataLayer' ? '&l=' + l : '';
+  j.async = true;
+  j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+  f.parentNode.insertBefore(j, f);
+})(window, document, 'script', 'dataLayer', 'GTM-XXXXXXX');
+</script>
+
+<!-- 4. MODO SEM GTM — alternativa, desligada por padrão.
+     Use SOMENTE se você não for usar o Google Tag Manager. Ativar este bloco
+     com o GTM ligado e com as mesmas tags configuradas lá dentro produz
+     contagem dupla de pageview e de conversão.
+
+     Para ativar: remova o comentário abaixo E remova o bloco 3 (GTM) acima.
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');   // GA4
+  gtag('config', 'AW-XXXXXXXXX');   // Google Ads
+</script>
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "[CLARITY_ID]");
+</script>
+     ========================================================================== -->
+
+<!-- 5. Dados estruturados. Preencha os campos marcados antes de publicar. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FoodEstablishment",
+  "name": "Marcos Massas",
+  "description": "Fábrica de salgados, nhoques e esfihas para revenda e consumidor final.",
+  "url": "https://[DOMINIO]/",
+  "telephone": "[WHATSAPP]",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "[ENDERECO]",
+    "addressLocality": "[CIDADE]",
+    "addressCountry": "BR"
+  },
+  "areaServed": "[REGIAO_ATENDIDA]",
+  "servesCuisine": ["Salgados", "Nhoques", "Esfihas"],
+  "openingHours": "[HORARIO_ATENDIMENTO]"
+}
+</script>

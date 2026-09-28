@@ -1,0 +1,10 @@
+# Dependências e artefatos de trabalho
+node_modules/
+.verificacao/
+
+# Skills de terceiros instaladas via `npx skills add`.
+# Não são código deste projeto; o skills-lock.json registra o que reinstalar:
+#   npx skills add https://github.com/anthropics/skills/tree/main/skills/frontend-design
+#   npx skills add https://github.com/pbakaus/impeccable --skill impeccable
+.agents/
+.claude/skills/

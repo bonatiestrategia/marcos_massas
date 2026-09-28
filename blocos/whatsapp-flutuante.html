@@ -1,0 +1,131 @@
+<!-- ============================================================================
+     BOTÃO FLUTUANTE DE WHATSAPP — canto inferior direito.
+     Cole VERBATIM. Você pode reescrever apenas os valores das variáveis CSS em
+     `:root` para encaixar no mundo visual do seu modelo. Não mexa na estrutura,
+     nos atributos de acessibilidade nem no data-wa.
+
+     Por que o verde e não o vermelho da marca: o visitante reconhece o botão
+     antes de ler qualquer coisa, e reconhecimento é conversão. O anel de foco e
+     a sombra é que carregam a marca. Se o seu modelo precisar do vermelho,
+     troque --mm-wa-icone-fundo e verifique o contraste do anel contra o fundo.
+
+     Contraste: o rótulo é tinta escura sobre branco (passa folgado). O glifo
+     branco sobre verde é logotipo — isento de 1.4.11 — e ainda assim o botão
+     tem borda própria, então a silhueta não depende do verde para ser vista.
+
+     ESPAÇO NO RODAPÉ: coloque a classe `mm-rodape` no <footer> (ou no último
+     bloco da página). Sem isso, o botão cobre o CTA final no celular — que é o
+     defeito mais comum deste componente.
+     ========================================================================== -->
+
+<style>
+  :root {
+    --mm-wa-tamanho: 60px;
+    --mm-wa-icone-fundo: #1c8a4e;      /* verde WhatsApp escurecido para a borda ficar legível */
+    --mm-wa-superficie: #ffffff;
+    --mm-wa-tinta: #1a1a1a;
+    --mm-wa-borda: rgba(0, 0, 0, .14);
+    --mm-wa-foco: #e61e20;             /* anel de foco na cor da marca */
+    --mm-wa-sombra: 0 7px 11px -6px rgba(0, 0, 0, .40);
+    --mm-wa-margem: 20px;
+    --mm-wa-espaco-rodape: calc(var(--mm-wa-tamanho) + var(--mm-wa-margem) * 2 + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mm-wa {
+    position: fixed;
+    right: calc(var(--mm-wa-margem) + env(safe-area-inset-right, 0px));
+    bottom: calc(var(--mm-wa-margem) + env(safe-area-inset-bottom, 0px));
+    z-index: 9000;
+    display: inline-flex;
+    align-items: center;
+    gap: .625rem;
+    padding: 6px 18px 6px 6px;
+    background: var(--mm-wa-superficie);
+    color: var(--mm-wa-tinta);
+    border: 1px solid var(--mm-wa-borda);
+    border-radius: 999px;
+    box-shadow: var(--mm-wa-sombra);
+    text-decoration: none;
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .32s cubic-bezier(.16, 1, .3, 1),
+                transform .32s cubic-bezier(.16, 1, .3, 1),
+                box-shadow .2s ease;
+  }
+
+  .mm-wa--visivel { opacity: 1; transform: none; }
+
+  .mm-wa__icone {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: calc(var(--mm-wa-tamanho) - 12px);
+    height: calc(var(--mm-wa-tamanho) - 12px);
+    background: var(--mm-wa-icone-fundo);
+    border-radius: 50%;
+    color: #fff;
+  }
+  .mm-wa__icone svg { width: 55%; height: 55%; display: block; }
+
+  .mm-wa__rotulo { font-size: .9375rem; font-weight: 600; white-space: nowrap; }
+
+  .mm-wa:hover { box-shadow: 0 10px 13px -8px rgba(0, 0, 0, .48); }
+  .mm-wa:focus-visible {
+    outline: 3px solid var(--mm-wa-foco);
+    outline-offset: 3px;
+  }
+  .mm-wa:active { transform: translateY(1px); }
+
+  /* No celular vira círculo: o rótulo sai, o alvo continua com 60px. */
+  @media (max-width: 640px) {
+    .mm-wa { padding: 6px; gap: 0; }
+    .mm-wa__rotulo {
+      position: absolute; width: 1px; height: 1px;
+      margin: -1px; padding: 0; overflow: hidden;
+      clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+    }
+  }
+
+  /* Reserva de espaço para o botão não cobrir o fim da página. */
+  .mm-rodape { padding-bottom: var(--mm-wa-espaco-rodape); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mm-wa { transition: none; opacity: 1; transform: none; }
+  }
+</style>
+
+<a class="mm-wa" id="mm-wa"
+   href="https://wa.me/[WHATSAPP]?text=Oi!%20Vim%20pelo%20site%20e%20queria%20falar%20sobre%20os%20produtos%20da%20Marcos%20Massas."
+   data-wa="flutuante"
+   target="_blank" rel="noopener"
+   aria-label="Falar no WhatsApp com a Marcos Massas">
+  <span class="mm-wa__icone" aria-hidden="true">
+    <svg viewBox="0 0 32 32" fill="currentColor" focusable="false" aria-hidden="true">
+      <path d="M16.004 0h-.008C7.174 0 .001 7.176.001 16c0 3.5 1.128 6.744 3.046 9.377L1.05 31.29l6.117-1.956A15.9 15.9 0 0 0 16.004 32C24.83 32 32 24.822 32 16S24.83 0 16.004 0zm9.313 22.593c-.386 1.09-1.918 1.994-3.14 2.258-.836.178-1.928.32-5.605-1.204-4.704-1.949-7.733-6.728-7.969-7.038-.226-.31-1.901-2.532-1.901-4.83 0-2.298 1.167-3.428 1.638-3.909.386-.394.987-.574 1.563-.574.186 0 .354.01.504.017.47.02.706.048 1.016.79.386.93 1.326 3.228 1.438 3.464.114.236.228.556.068.866-.15.32-.282.462-.518.734-.236.272-.46.48-.696.772-.216.254-.46.526-.188.996.272.46 1.212 1.994 2.596 3.226 1.786 1.59 3.234 2.098 3.752 2.314.386.16.846.122 1.128-.178.358-.386.8-1.026 1.25-1.656.32-.452.724-.508 1.148-.348.432.15 2.72 1.282 3.19 1.516.47.236.78.35.894.546.112.198.112 1.13-.274 2.22z"/>
+    </svg>
+  </span>
+  <span class="mm-wa__rotulo">Falar no WhatsApp</span>
+</a>
+
+<script>
+  /* Entra uma vez: no primeiro scroll, ou depois de 1,5s para quem não rolar.
+     Com movimento reduzido, já nasce visível e nada disso roda. */
+  (function () {
+    var botao = document.getElementById('mm-wa');
+    if (!botao) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      botao.classList.add('mm-wa--visivel');
+      return;
+    }
+    var mostrado = false;
+    function mostrar() {
+      if (mostrado) return;
+      mostrado = true;
+      botao.classList.add('mm-wa--visivel');
+      window.removeEventListener('scroll', mostrar);
+    }
+    window.addEventListener('scroll', mostrar, { passive: true, once: true });
+    setTimeout(mostrar, 1500);
+  })();
+</script>
