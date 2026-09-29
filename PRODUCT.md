@@ -97,6 +97,7 @@ explicitamente **orgânico**.
 | Validade | **3 meses** congelado a −18 °C · **2 dias** na geladeira depois de descongelado |
 | Esfihas | **Só fechadas** — a linha não tem esfiha aberta |
 | Embalagem | **Plástico, não caixa.** A página não deve falar em "caixa fechada" |
+| Peso da página | **1,4 MB** com tudo embutido. Em produção, servir `imagens/*.webp` como arquivos: base64 não é cacheável |
 | Salgados | **Já vão fritos e congelados** — o cliente só aquece. *Corrige a informação anterior de que iam crus para fritar.* |
 
 ## Fatos indefinidos — usar placeholder, nunca inventar
@@ -114,7 +115,7 @@ média nem total de avaliações**: só existem estas seis.
 
 ## Ativos indisponíveis nesta sessão
 
-**Duas fotos já foram entregues pelo cliente** e estão na seção de públicos:
+**Seis fotos já foram entregues pelo cliente** e estão na seção de públicos:
 `imagens/negocio.jpg` (cozinha profissional) e `imagens/casa.jpg` (mesa em família). As duas em
 16:9, que é a proporção nativa dos arquivos originais.
 

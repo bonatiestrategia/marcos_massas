@@ -103,7 +103,9 @@ flutuante contra o hero. Se o flutuante dominar com folga, o hero não está con
 
 ## 8. Ativos que o cliente precisa produzir
 
-> **Duas já chegaram.** As fotos 8 e 9 estão na página. Vieram em 1408×768 (1,83), então essas duas
+> **Seis já chegaram.** Falta só a do pedido montado, no campo vermelho.
+>
+> **As duas primeiras.** As fotos 8 e 9 estão na página. Vieram em 1408×768 (1,83), então essas duas
 > molduras usam **16:9** em vez de 4:3 — cortar para 4:3 comeria 27% da largura e, na foto de casa,
 > decepava a família ou a anfitriã. Os PNG de 1,7 MB foram convertidos para JPEG de ~127 KB.
 
@@ -112,10 +114,10 @@ na proporção final**. Lista para produção:
 
 | # | Foto | Proporção | Onde entra |
 |---|---|---|---|
-| 1 | Balcão montado com as três linhas servidas | 4:3 | Hero |
-| 2 | Bandeja de salgados crus congelados, vista de cima | 1:1 | Linha de salgados |
-| 3 | Nhoque fresco polvilhado, close | 1:1 | Linha de nhoques |
-| 4 | Esfihas saindo do forno | 1:1 | Linha de esfihas |
+| ~~1~~ | ~~Balcão montado com as três linhas~~ — **entregue** (`imagens/hero-tres-linhas.webp`) | 3:2 | Hero |
+| ~~2~~ | ~~Salgados~~ — **entregue** (`imagens/salgados.webp`) | 1:1 | Linha de salgados |
+| ~~3~~ | ~~Nhoque~~ — **entregue** (`imagens/nhoques.webp`) | 1:1 | Linha de nhoques |
+| ~~4~~ | ~~Esfihas~~ — **entregue** (`imagens/esfihas.webp`) | 1:1 | Linha de esfihas |
 | 5 | Entrega ou embalagem com etiqueta — **o produto é embalado em plástico, não em caixa** | 3:2 | Como funciona o pedido |
 | ~~8~~ | ~~Um negócio servindo os nossos produtos~~ — **entregue** (`imagens/negocio.jpg`) | 16:9 | Para o seu negócio |
 | ~~9~~ | ~~Alguém cozinhando em casa~~ — **entregue** (`imagens/casa.jpg`) | 16:9 | Para a sua casa |
