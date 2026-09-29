@@ -8,3 +8,8 @@ node_modules/
 #   npx skills add https://github.com/pbakaus/impeccable --skill impeccable
 .agents/
 .claude/skills/
+
+# Cópia de entrega da página, gerada sob demanda a partir de
+# modelos/03-mesa/index.html. Não versionada: seriam 1,6 MB duplicados
+# do mesmo arquivo, e ela nasce desatualizada a cada ajuste no modelo.
+/marcos-massas-site.html
