@@ -103,7 +103,8 @@ flutuante contra o hero. Se o flutuante dominar com folga, o hero não está con
 
 ## 8. Ativos que o cliente precisa produzir
 
-> **Seis já chegaram.** Falta só a do pedido montado, no campo vermelho.
+> **Sete já chegaram.** Das fotos do produto, não falta nenhuma. Restam só os ativos que
+> dependem de terceiros: os logotipos de clientes (foto 6) e a foto de embalagem/entrega (foto 5).
 >
 > **As duas primeiras.** As fotos 8 e 9 estão na página. Vieram em 1408×768 (1,83), então essas duas
 > molduras usam **16:9** em vez de 4:3 — cortar para 4:3 comeria 27% da largura e, na foto de casa,
@@ -121,7 +122,7 @@ na proporção final**. Lista para produção:
 | 5 | Entrega ou embalagem com etiqueta — **o produto é embalado em plástico, não em caixa** | 3:2 | Como funciona o pedido |
 | ~~8~~ | ~~Um negócio servindo os nossos produtos~~ — **entregue** (`imagens/negocio.jpg`) | 16:9 | Para o seu negócio |
 | ~~9~~ | ~~Alguém cozinhando em casa~~ — **entregue** (`imagens/casa.jpg`) | 16:9 | Para a sua casa |
-| 10 | Pedido montado, pronto para sair — sobre o campo vermelho, então uma foto de fundo claro ou recortada funciona melhor | 4:3 | Chamada final |
+| ~~10~~ | ~~Pedido montado, pronto para sair~~ — **entregue** (`imagens/pacotes.webp`): pilha de pacotes de nhoque, um oval de cor por sabor. Veio em 1448×1086, exatamente 4:3, e o fundo claro (azulejo e bancada de aço) era o que o campo vermelho pedia. Serve de prova dupla: mostra a embalagem real e as etiquetas de 500 g que a página afirma | 4:3 | Chamada final |
 | 6 | 4 logotipos de clientes de balcão | 3:2 | Prova social |
 | ~~7~~ | ~~2 depoimentos~~ — **entregue**: 6 avaliações do Google, transcritas verbatim | — | Prova social |
 
