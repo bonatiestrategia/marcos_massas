@@ -1,8 +1,9 @@
 # Planejamento da landing page — Marcos Massas
 
-> **Estado:** o modelo 3 (Mesa farta) foi escolhido e virou a página de produção, em
-> `modelos/03-mesa/index.html`. Ele carrega a logomarca, os dados reais de São Paulo e do WhatsApp,
-> e **não tem formulário** — a conversão é exclusivamente WhatsApp.
+> **Estado:** o site está pronto e é o `index.html` da raiz deste repositório. Carrega a logomarca,
+> as sete fotos do cliente, os dados reais de São Paulo e do WhatsApp, as avaliações do Google e a
+> camada de medição. **Não tem formulário** — a conversão é exclusivamente WhatsApp.
+> O que falta para entrar no ar está na seção 10.
 
 Documento de estratégia. O conteúdo literal está em `conteudo/copy-base.md`; os fatos que não podem
 ser inventados estão em `PRODUCT.md`; a medição está em `CONFIGURACAO-ANALYTICS.md`.
@@ -136,26 +137,32 @@ horário (segunda a sexta, das 7h às 17h) e CNPJ (32.734.348/0001-07).
 Enquanto não vierem, os placeholders ficam visíveis de propósito. Uma landing page de captação com
 prazo ou depoimento inventado não é um rascunho — é um problema jurídico e de reputação.
 
-## 9. Os 5 modelos
+## 9. A direção visual escolhida
 
-Cinco mundos visuais sobre exatamente o mesmo conteúdo e a mesma medição, para a escolha ser de
-design e não de conteúdo.
+**Mesa farta** — editorial gastronômico. A mesa vista de cima, o produto liderando a primeira dobra,
+grade de 12 colunas com as peças em alturas deslocadas, muito ar, alinhamento à esquerda, medida de
+68 caracteres por linha. Fraunces para os títulos e Karla para o texto. A cor da marca não se
+espalha: o vermelho ganha um campo inteiro no fim da página, onde a ação precisa vencer, e o
+amarelo aparece escasso, sempre marcando um fato ou uma ação.
 
-| # | Modelo | Ideia |
-|---|---|---|
-| 1 | **Massa viva** | Orgânico: formas da massa e da farinha, contornos irregulares, feitura à mão |
-| 2 | **Balcão** | O balcão real: azulejo, letreiro esmaltado, etiqueta de preço |
-| 3 | **Mesa farta** | Editorial gastronômico: mesa vista de cima, o produto lidera |
-| 4 | **Forno** | Herança árabe-brasileira da esfiha e o calor do forno |
-| 5 | **Encarte** | O encarte brasileiro de atacado: o mais comercial e o mais B2B |
+A escolha saiu de **cinco direções construídas em paralelo** sobre exatamente o mesmo conteúdo e a
+mesma medição, para a decisão ser de design e não de conteúdo. As outras quatro — orgânica, balcão
+de lanchonete, forno, encarte de atacado — foram exploradas, comparadas lado a lado e descartadas.
+Elas saíram do repositório depois da escolha; quem quiser revê-las encontra no histórico do Git.
 
-Nenhum deles usa estética industrial — restrição declarada pelo cliente.
+Nenhuma delas usava estética industrial — restrição declarada pelo cliente.
 
-## 10. Depois de escolher um modelo
+## 10. O que falta para entrar no ar
 
-1. Preencher os dados reais e trocar as molduras pelas fotos.
-2. Publicar em domínio próprio com HTTPS.
-3. Substituir os IDs de medição e validar no modo de visualização do GTM.
-4. Verificar a propriedade no Search Console.
-5. Marcar `whatsapp_click` como conversão principal e importar no Ads.
-6. Só então subir campanha. Campanha em página sem conversão configurada gasta sem aprender.
+O conteúdo está fechado e os dados reais estão na página. Falta:
+
+1. **Trocar os base64 por arquivos de imagem.** As sete fotos estão embutidas dentro do HTML, o que
+   deixa a página em 1,6 MB. Referenciar `imagens/*.webp` derruba o HTML para ~60 KB e deixa as
+   fotos serem cacheadas e carregadas sob demanda. É o item de maior impacto da lista.
+2. **Publicar em domínio próprio com HTTPS.** O repositório já está na forma certa para isso: o site
+   é o `index.html` da raiz.
+3. **Substituir os IDs de medição** (`GTM-XXXXXXX`, `[CLARITY_ID]`, `[DOMINIO]`,
+   `[TOKEN_SEARCH_CONSOLE]`) e validar no modo de visualização do GTM.
+4. **Verificar a propriedade no Search Console.**
+5. **Marcar `whatsapp_click` como conversão principal** no GA4 e importar no Ads.
+6. **Só então subir campanha.** Campanha em página sem conversão configurada gasta sem aprender.

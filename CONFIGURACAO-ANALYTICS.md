@@ -1,7 +1,7 @@
 # Configuração de medição — GTM, GA4, Google Ads, Search Console e Clarity
 
-Os 5 modelos já saem com a camada de medição inteira montada. O que falta é trocar os placeholders
-por IDs reais e criar as tags dentro do GTM. Nada aqui exige mexer no HTML além da substituição.
+O site já sai com a camada de medição inteira montada. O que falta é trocar os placeholders por
+IDs reais e criar as tags dentro do GTM. Nada aqui exige mexer no HTML além da substituição.
 
 ## A arquitetura, e por que ela é assim
 
@@ -15,7 +15,7 @@ passa por gerenciador de tags.
 
 ## 1. Substituir os placeholders
 
-Em cada `modelos/*/index.html`:
+No `index.html`:
 
 | Placeholder | Onde pegar | Formato |
 |---|---|---|

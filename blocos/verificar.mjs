@@ -1,6 +1,6 @@
 /* ============================================================================
    verificar.mjs — rodada de inspeção em lote. Desktop e mobile num render só.
-   Uso:  node blocos/verificar.mjs modelos/01-massa-viva/index.html
+   Uso:  node blocos/verificar.mjs index.html
    Saída: JSON no stdout + capturas em .verificacao/<modelo>/
 
    Uma rodada mostra tudo. Corrija tudo o que ela apontar de uma vez, rode no
