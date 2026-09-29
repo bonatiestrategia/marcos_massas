@@ -683,14 +683,16 @@ html { scroll-behavior: smooth; }
 .passo p { max-width: 38ch; color: var(--tinta-media); margin: 0; }
 
 /* ==========================================================================
-   5. Revenda e consumidor final — duas peças de peso diferente
+   5. Revenda e consumidor final — duas peças pareadas
    ========================================================================== */
 .publicos__cabeca { grid-column: 1 / span 8; margin-bottom: clamp(2.25rem, 4.5vw, 3.5rem); }
-.publico--negocio { grid-column: 1 / span 6; }
-.publico--casa    { grid-column: 8 / span 5; padding-top: clamp(1.5rem, 3vw, 3rem); }
-/* Molduras 4:3 — a mesma gramática de foto do hero, em vez de criar uma
-   quarta proporção na página. O desalinhamento vertical entre as duas colunas
-   é preservado: é a assinatura do modelo 3, mesa vista de cima. */
+/* As duas colunas têm a mesma medida (5 de 12, calha nas colunas 6 e 7) e o
+   mesmo topo. O ritmo assimétrico é a assinatura do modelo 3 e vale no
+   catálogo, onde as peças são lidas em sequência; aqui são duas opções
+   paralelas comparadas lado a lado — e com fotografia real dentro, tamanhos
+   diferentes leem como erro, não como ritmo. */
+.publico--negocio { grid-column: 1 / span 5; }
+.publico--casa    { grid-column: 8 / span 5; }
 /* As fotos do cliente são 1408×768 (1,83). Em 4:3 o corte comeria 27% da
    largura — e na foto de casa isso decepa a família ou a anfitriã, que são o
    assunto. Em 16:9 o corte cai para ~3%. O passe-partout de fio duplo existia
