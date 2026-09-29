@@ -544,14 +544,18 @@ html { scroll-behavior: smooth; }
   background: var(--tinta-suave);
 }
 
-/* Composição de mesa: tamanhos e alturas diferentes, com respiro entre as peças. */
+/* Composição de mesa: as três peças alternam de lado e de altura, mas as três
+   fotos têm a MESMA medida — 5 colunas, quadradas. Larguras diferentes numa
+   mesma série de produtos leem como hierarquia acidental, não como ritmo; o
+   deslocamento horizontal e vertical já basta para a composição não ficar
+   enfileirada. Cada foto deixa uma coluna de calha entre ela e o seu texto. */
 .prato--nhoques .prato__moldura  { grid-column: 1 / span 5; grid-row: 2; }
 .prato--nhoques .prato__texto    { grid-column: 7 / span 5; grid-row: 2; align-self: end; padding-bottom: .5rem; }
 
-.prato--esfihas .prato__texto    { grid-column: 2 / span 4; grid-row: 3; align-self: start; padding-top: clamp(3rem, 7vw, 6.5rem); }
-.prato--esfihas .prato__moldura  { grid-column: 7 / span 4; grid-row: 3; margin-top: clamp(3rem, 7vw, 6.5rem); }
+.prato--esfihas .prato__texto    { grid-column: 1 / span 5; grid-row: 3; align-self: start; padding-top: clamp(3rem, 7vw, 6.5rem); }
+.prato--esfihas .prato__moldura  { grid-column: 7 / span 5; grid-row: 3; margin-top: clamp(3rem, 7vw, 6.5rem); }
 
-.prato--salgados .prato__moldura { grid-column: 3 / span 4; grid-row: 4; margin-top: clamp(3rem, 7vw, 6rem); }
+.prato--salgados .prato__moldura { grid-column: 2 / span 5; grid-row: 4; margin-top: clamp(3rem, 7vw, 6rem); }
 .prato--salgados .prato__texto   { grid-column: 8 / span 5; grid-row: 4; align-self: end; padding-bottom: .5rem; }
 
 .linhas__acao { grid-column: 1 / span 12; margin-top: clamp(3rem, 6vw, 5.5rem); }
@@ -823,9 +827,11 @@ html { scroll-behavior: smooth; }
   .prato--salgados .prato__texto,
   .prato--nhoques  .prato__texto,
   .prato--esfihas  .prato__texto   { grid-column: 1 / span 11; padding-top: 1.5rem; padding-bottom: clamp(2.75rem, 6vw, 4rem); }
-  .prato--salgados .prato__moldura { grid-row: 2; } .prato--salgados .prato__texto { grid-row: 3; }
-  .prato--nhoques  .prato__moldura { grid-row: 4; } .prato--nhoques  .prato__texto { grid-row: 5; }
-  .prato--esfihas  .prato__moldura { grid-row: 6; } .prato--esfihas  .prato__texto { grid-row: 7; }
+  /* Mesma ordem do desktop e do DOM: nhoque (carro-chefe), esfiha, salgado.
+     As linhas ficavam com a ordem antiga, de quando o salgado abria a seção. */
+  .prato--nhoques  .prato__moldura { grid-row: 2; } .prato--nhoques  .prato__texto { grid-row: 3; }
+  .prato--esfihas  .prato__moldura { grid-row: 4; } .prato--esfihas  .prato__texto { grid-row: 5; }
+  .prato--salgados .prato__moldura { grid-row: 6; } .prato--salgados .prato__texto { grid-row: 7; }
   .prato--nhoques .prato__texto, .prato--esfihas .prato__texto { align-self: start; }
 
   .motivos__cabeca, .pedido__cabeca, .publicos__cabeca, .prova__cabeca,
