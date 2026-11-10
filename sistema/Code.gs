@@ -25,7 +25,7 @@ var COLUNAS_SIM_NAO = ['ativo', 'pago', 'entregue'];
 
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Controle de Marmitas')
+    .setTitle('Tempero da Nonna')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
 }
 

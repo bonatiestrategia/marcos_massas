@@ -1,4 +1,4 @@
-# Controle de Marmitas
+# Tempero da Nonna: controle de marmitas
 
 Sistema para organizar custos, preços e vendas de marmitas congeladas.
 Funciona no celular e no computador pelo mesmo link, e guarda os dados numa
