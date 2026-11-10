@@ -9,6 +9,7 @@ planilha do Google Drive da dona do negócio.
 | Tela | Para que serve |
 |---|---|
 | **Vendas** | Registrar pedidos, ver o que falta receber e entregar, mandar o resumo pelo WhatsApp. Tem também a lista de **Clientes** com o histórico de cada um. |
+| **Compras** | Lista de compras. Ela escolhe o período dos pedidos e soma marmitas a mais; o sistema calcula os ingredientes crus (desfazendo a perda no preparo), desconta o que já tem em casa e diz quantos pacotes comprar e quanto vai gastar. Dá para marcar os itens no mercado e mandar a lista pelo WhatsApp. |
 | **Marmitas** | O cardápio. Mostra custo, lucro e margem de cada marmita e avisa quando a margem está baixa. |
 | **Receitas** | Preparações com vários ingredientes (ex.: purê). Calcula o custo por 100 g. |
 | **Ingredientes** | Tudo o que é comprado: ingredientes, embalagens e temperos, com preço, perda na limpeza e rendimento no cozimento. |
@@ -70,6 +71,7 @@ cadastra os ingredientes, a receita do purê e as duas marmitas que passamos.
 - **Preço de ingrediente mudou?** Tela Ingredientes → toque no ingrediente → altere o preço → Salvar. Receitas e marmitas recalculam sozinhas.
 - **Quer o rendimento exato da cozinha?** No ingrediente, abra "Calcular pelo teste de rendimento" e digite os três pesos (como comprou, limpo, pronto).
 - **Cliente pediu quantidades diferentes?** No pedido, toque em "Ajustar quantidades para este cliente". O sistema mostra o custo e sugere um preço com a mesma margem do cardápio.
+- **Lista de compras:** na tela Compras, escolha o período (ex.: "Esta semana") e, se for produzir a mais, use o + nas marmitas. Preencha "Tenho em casa" para não comprar em excesso. A conta usa o tamanho do pacote cadastrado em cada ingrediente, então mantenha esse dado certo.
 - **Custos fixos:** na tela Resultado, clique em "+ Gás", "+ Energia elétrica" etc. e digite o valor do mês. No mês seguinte, use "Copiar custos do mês anterior".
 - **Algo parou de ser usado?** Abra e clique em "Desativar". Ele some das listas, mas continua nos pedidos antigos.
 

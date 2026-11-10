@@ -224,6 +224,26 @@ details.teste .grade { margin-top: 12px; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(24px + var(--safe-bottom)); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 99px; z-index: 60; font-weight: 500; box-shadow: var(--shadow); max-width: calc(100% - 32px); }
 @media (max-width: 760px) { .toast { bottom: calc(92px + var(--safe-bottom)); } }
 .toast.erro { background: var(--bad); color: #fff; }
+
+/* Lista de compras */
+.periodo { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; padding: 14px 16px; }
+.periodo label.campo { width: 160px; }
+.prod { display: grid; gap: 8px; padding: 14px 16px; border-top: 1px solid var(--line); }
+.prod-l { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; }
+.prod-l .small { white-space: nowrap; }
+.l-compra { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 150px) minmax(0, 160px); gap: 6px 14px; padding: 12px 16px; border-bottom: 1px solid var(--line); align-items: center; }
+.l-compra:last-child { border-bottom: 0; }
+.l-compra.feito .nome-c { text-decoration: line-through; color: var(--muted); }
+.l-compra .check input { width: 22px; height: 22px; }
+.l-compra .estoque { display: flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--muted); }
+.l-compra .estoque input { width: 80px; padding: 5px 8px; }
+.l-compra .comprar { text-align: right; font-variant-numeric: tabular-nums; }
+.l-compra .comprar b { display: block; font-size: 1.02rem; }
+@media (max-width: 640px) {
+  .l-compra { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .l-compra .estoque { grid-column: 2 / -1; grid-row: 2; }
+}
+.total-compra { display: flex; justify-content: space-between; gap: 12px; padding: 14px 16px; background: var(--accent-soft); font-weight: 700; font-family: var(--font-display); font-size: 1.15rem; font-variant-numeric: tabular-nums; }
 .carregando { padding: 60px 0; text-align: center; color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { .janela.abre { animation: sobe .18s ease-out; } @keyframes sobe { from { transform: translateY(12px); opacity: .6; } } }
 </style>
@@ -448,9 +468,10 @@ const ICONES = {
   receitas: '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>',
   marmitas: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M12 6v13M3 12h9"/>',
   vendas: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/>',
-  dre: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'
+  dre: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  compras: '<path d="M3 4h2l2.4 11h11.2L21 7H6.2"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>'
 };
-const ABAS = [['vendas', 'Vendas'], ['marmitas', 'Marmitas'], ['receitas', 'Receitas'], ['ingredientes', 'Ingredientes'], ['dre', 'Resultado']];
+const ABAS = [['vendas', 'Vendas'], ['compras', 'Compras'], ['marmitas', 'Marmitas'], ['receitas', 'Receitas'], ['ingredientes', 'Ingredientes'], ['dre', 'Resultado']];
 let aba = lembrado('aba', 'vendas');
 const filtro = { vendasMes: mesAtual(), vendasBusca: '', vendasSituacao: 'todos', vendasVista: 'pedidos', dreMes: mesAtual(), ingBusca: '', inativos: false };
 
@@ -462,7 +483,7 @@ function desenharAbas() {
 
 function desenhar() {
   desenharAbas();
-  const telas = { ingredientes: telaIngredientes, receitas: telaReceitas, marmitas: telaMarmitas, vendas: telaVendas, dre: telaDre };
+  const telas = { ingredientes: telaIngredientes, receitas: telaReceitas, marmitas: telaMarmitas, vendas: telaVendas, compras: telaCompras, dre: telaDre };
   const aviso = MODO_DEMO ? `<div class="aviso-demo"><span><b>Modo demonstração.</b> Os dados ficam só neste navegador. Clientes e pedidos marcados “exemplo” são fictícios.</span><button class="btn mini" data-acao="recomecar-demo">Recomeçar demonstração</button></div>` : '';
   document.getElementById('conteudo').innerHTML = aviso + (telas[aba] || telaVendas)();
 }
@@ -595,6 +616,134 @@ function telaClientes(alternador) {
   return `<div class="cab"><div><h2>Clientes</h2><p>Quem já comprou, quanto já gastou e quando foi o último pedido. Clientes novos também são cadastrados direto no pedido.</p></div>${alternador}</div>
     <div class="cab"><span></span><button class="btn pri" data-acao="novo-cli">+ Novo cliente</button></div>
     <section class="bloco">${linhas || '<div class="vazio">Nenhum cliente ainda.</div>'}</section>`;
+}
+
+/* ============================================================
+   Tela: Lista de compras
+   ============================================================ */
+function dataISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function semana(desloc) {
+  const d = new Date(); d.setHours(12, 0, 0, 0);
+  const seg = new Date(d); seg.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 7 * desloc);
+  const dom = new Date(seg); dom.setDate(seg.getDate() + 6);
+  return [dataISO(seg), dataISO(dom)];
+}
+function estadoCompras() {
+  let c = null;
+  try { c = JSON.parse(localStorage.getItem('marmitas-compras') || 'null'); } catch (e) { /* ok */ }
+  const [de, ate] = semana(0);
+  return Object.assign({ de, ate, soAEntregar: true, extras: {}, estoque: {}, marcados: {}, seguranca: 0 }, c || {});
+}
+let compra = estadoCompras();
+function guardarCompras() { try { localStorage.setItem('marmitas-compras', JSON.stringify(compra)); } catch (e) { /* ok */ } }
+
+/** Quanto de cada marmita vai ser produzido: pedidos do período + marmitas a mais. */
+function producaoPlanejada() {
+  const peds = db.Pedidos.filter(p => p.data >= compra.de && p.data <= compra.ate && (!compra.soAEntregar || !p.entregue));
+  const lotes = [], resumo = {}, avisos = [];
+  const somar = (chave, nome, deP, extra) => { if (!resumo[chave]) resumo[chave] = { nome, pedidos: 0, extra: 0 }; resumo[chave].pedidos += deP; resumo[chave].extra += extra; };
+  peds.forEach(p => (p.itens || []).forEach(it => {
+    const q = num(it.qtd); if (!q) return;
+    if (it.personalizada) { lotes.push({ itens: it.componentes, qtd: q }); somar(it.marmitaId + '*', it.nome + ' (personalizada)', q, 0); return; }
+    const m = marPorId(it.marmitaId);
+    if (!m) { avisos.push(it.nome); return; }
+    lotes.push({ itens: m.itens, qtd: q }); somar(m.id, m.nome, q, 0);
+  }));
+  Object.entries(compra.extras).forEach(([id, q]) => { const m = marPorId(id); q = num(q); if (m && q > 0) { lotes.push({ itens: m.itens, qtd: q }); somar(m.id, m.nome, 0, q); } });
+  return { peds, lotes, resumo, avisos };
+}
+
+/** Converte a produção em ingredientes crus (em g, ml ou unidade). */
+function necessidadeCrua(lotes) {
+  const nec = {};
+  const add = (i, qtdBase) => { if (!i || qtdBase <= 0) return; nec[i.id] = (nec[i.id] || 0) + qtdBase; };
+  const crua = (i, qtdPronta) => baseUn(i) === 'un' ? qtdPronta : qtdPronta / rendimentoIng(i);
+  lotes.forEach(l => (l.itens || []).forEach(c => {
+    const q = num(c.qtd) * l.qtd;
+    if (c.tipo === 'rec') {
+      const r = recPorId(c.id); if (!r || num(r.rendimento) <= 0) return;
+      const f = q / num(r.rendimento);
+      (r.itens || []).forEach(it => { const i = ingPorId(it.id); if (!i) return; const qi = num(it.qtd) * f; add(i, it.estado === 'cru' ? qi : crua(i, qi)); });
+    } else { const i = ingPorId(c.id); if (i) add(i, crua(i, q)); }
+  }));
+  return nec;
+}
+const ehEstimativa = i => i.categoria === 'tempero' && i.unidade === 'un';
+function qtdLegivel(qBase, i) {
+  const b = baseUn(i);
+  if (b === 'un') return fmtN(Math.ceil(qBase - 1e-9), 0) + ' un';
+  const grande = b === 'g' ? 'kg' : 'L';
+  return qBase >= 1000 ? fmtN(qBase / 1000, 2) + ' ' + grande : fmtN(Math.ceil(qBase - 1e-9), 0) + ' ' + b;
+}
+function pacoteLegivel(n, i) {
+  if (i.unidade === 'un') return num(i.qtdPacote) === 1 ? `${n} ${n === 1 ? 'unidade' : 'unidades'}` : `${n} ${n === 1 ? 'pacote' : 'pacotes'} com ${fmtN(num(i.qtdPacote), 0)} un`;
+  return `${n} × ${fmtN(num(i.qtdPacote), 3)} ${i.unidade}`;
+}
+function listaDeCompras() {
+  const prod = producaoPlanejada();
+  const nec = necessidadeCrua(prod.lotes);
+  const seg = 1 + num(compra.seguranca) / 100;
+  const ordemCat = { ingrediente: 0, embalagem: 1, tempero: 2 };
+  const itens = Object.entries(nec).map(([id, q]) => ({ i: ingPorId(id), q })).filter(x => x.i && !ehEstimativa(x.i))
+    .sort((a, b) => (ordemCat[a.i.categoria] ?? 3) - (ordemCat[b.i.categoria] ?? 3) || a.i.nome.localeCompare(b.i.nome, 'pt-BR'))
+    .map(({ i, q }) => {
+      const pacote = num(i.qtdPacote) * un(i).fator;
+      const precisa = baseUn(i) === 'un' ? Math.ceil(q * seg - 1e-9) : q * seg;
+      const tenho = num(compra.estoque[i.id]) * un(i).fator;
+      const falta = Math.max(0, precisa - tenho);
+      const pacotes = pacote > 0 ? Math.ceil(falta / pacote - 1e-9) : 0;
+      return { i, precisa, tenho, falta, pacotes, custo: pacotes * num(i.preco), sobra: pacotes * pacote - falta };
+    });
+  const estimativas = Object.entries(nec).map(([id, q]) => ({ i: ingPorId(id), q })).filter(x => x.i && ehEstimativa(x.i));
+  return { prod, itens, estimativas, total: itens.reduce((s, x) => s + x.custo, 0) };
+}
+
+function textoCompras(l) {
+  const linhas = [`*Lista de compras: ${dataBR(compra.de)} a ${dataBR(compra.ate)}*`, ''];
+  l.itens.filter(x => x.pacotes > 0).forEach(x => linhas.push(`- ${x.i.nome}: ${pacoteLegivel(x.pacotes, x.i)} (${R(x.custo)})`));
+  linhas.push('', `*Total estimado: ${R(l.total)}*`);
+  return linhas.join('\n');
+}
+
+function telaCompras() {
+  const l = listaDeCompras(), prod = l.prod;
+  const [s0, s1] = semana(0), [p0, p1] = semana(1);
+  const m = mesAtual(), fimMes = dataISO(new Date(Number(m.slice(0, 4)), Number(m.slice(5, 7)), 0));
+  const atalho = (rot, de, ate) => `<button class="btn mini ${compra.de === de && compra.ate === ate ? 'pri' : ''}" data-acao="periodo-compras" data-de="${de}" data-ate="${ate}">${rot}</button>`;
+  const totalMarmitas = Object.values(prod.resumo).reduce((s, r) => s + r.pedidos + r.extra, 0);
+  const resumoProd = Object.values(prod.resumo).sort((a, b) => (b.pedidos + b.extra) - (a.pedidos + a.extra)).map(r =>
+    `<div class="prod-l"><span>${esc(r.nome)}</span><span class="small muted">${r.pedidos ? r.pedidos + ' dos pedidos' : ''}${r.pedidos && r.extra ? ' + ' : ''}${r.extra ? r.extra + ' a mais' : ''}</span><b class="num">${fmtN(r.pedidos + r.extra, 0)}</b></div>`).join('');
+  const extras = db.Marmitas.filter(mm => mm.ativo).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')).map(mm => { const q = num(compra.extras[mm.id]);
+    return `<div class="prod-l"><span>${esc(mm.nome)}</span><span></span><div class="passo"><button data-acao="extra-compras" data-id="${esc(mm.id)}" data-d="-1" aria-label="Menos">−</button><input type="text" inputmode="numeric" id="cx-${esc(mm.id)}" data-compra="extras.${esc(mm.id)}" value="${q || ''}" placeholder="0" aria-label="Quantidade a mais de ${esc(mm.nome)}"><button data-acao="extra-compras" data-id="${esc(mm.id)}" data-d="1" aria-label="Mais">+</button></div></div>`; }).join('');
+
+  const linhas = l.itens.map(x => { const i = x.i, feito = !!compra.marcados[i.id];
+    const unEst = i.unidade === 'un' ? 'un' : i.unidade;
+    return `<div class="l-compra ${feito ? 'feito' : ''}">
+      <label class="check"><input type="checkbox" id="ck-${esc(i.id)}" data-compra="marcados.${esc(i.id)}" ${feito ? 'checked' : ''} aria-label="Comprado: ${esc(i.nome)}"></label>
+      <div style="min-width:0"><div class="nome-c"><b>${esc(i.nome)}</b></div><div class="small muted">Precisa de ${qtdLegivel(x.precisa, i)}${baseUn(i) === 'un' ? '' : ' cru'}${x.pacotes && x.sobra > 0.5 ? ' · sobra ' + qtdLegivel(x.sobra, i) : ''}</div></div>
+      <label class="estoque">Tenho em casa <input type="text" inputmode="decimal" id="ce-${esc(i.id)}" data-compra="estoque.${esc(i.id)}" value="${esc(compra.estoque[i.id] ?? '')}" placeholder="0"> ${esc(unEst)}</label>
+      <div class="comprar">${x.pacotes ? `<b>${pacoteLegivel(x.pacotes, i)}</b><span class="small muted">${R(x.custo)}</span>` : '<span class="chip ok">Já tem o suficiente</span>'}</div>
+    </div>`; }).join('');
+
+  return `<div class="cab"><div><h2>Lista de compras</h2><p>Escolha o que vai ser produzido e o sistema calcula os ingredientes crus, já descontando a perda no preparo, e quantos pacotes comprar.</p></div></div>
+    <section class="bloco"><div class="bloco-tit"><h3>1. Pedidos do período</h3><span class="small muted">${prod.peds.length} ${prod.peds.length === 1 ? 'pedido' : 'pedidos'}</span></div>
+      <div class="periodo">
+        <label class="campo">De<input type="date" id="c-de" data-compra="de" value="${esc(compra.de)}"></label>
+        <label class="campo">Até<input type="date" id="c-ate" data-compra="ate" value="${esc(compra.ate)}"></label>
+        <div class="ferramentas">${atalho('Esta semana', s0, s1)}${atalho('Próxima semana', p0, p1)}${atalho('Este mês', m + '-01', fimMes)}</div>
+        <label class="check small"><input type="checkbox" id="c-aentregar" data-compra="soAEntregar" ${compra.soAEntregar ? 'checked' : ''}> Só pedidos ainda não entregues</label>
+      </div>
+      ${prod.avisos.length ? `<div class="prod small"><span class="chip warn">Fora da conta: ${esc([...new Set(prod.avisos)].join(', '))} (marmita removida do cardápio)</span></div>` : ''}
+    </section>
+    <section class="bloco"><div class="bloco-tit"><h3>2. Marmitas a mais</h3><span class="small muted">fora dos pedidos, para pronta-entrega</span></div><div class="prod" style="border-top:0">${extras || '<span class="muted">Nenhuma marmita no cardápio.</span>'}</div></section>
+    <section class="bloco"><div class="bloco-tit"><h3>Produção total</h3><b class="num">${fmtN(totalMarmitas, 0)} marmitas</b></div><div class="prod" style="border-top:0">${resumoProd || '<span class="muted">Nenhuma marmita para produzir. Escolha um período com pedidos ou some marmitas a mais.</span>'}</div></section>
+    <section class="bloco"><div class="bloco-tit"><h3>3. O que comprar</h3>
+        <label class="estoque small muted" style="display:flex;gap:6px;align-items:center">Margem de segurança <input type="text" inputmode="decimal" id="c-seg" data-compra="seguranca" value="${esc(compra.seguranca || '')}" placeholder="0" style="width:60px;padding:4px 8px"> %</label></div>
+      ${linhas || '<div class="vazio">A lista aparece aqui quando houver marmitas para produzir.</div>'}
+      ${l.itens.length ? `<div class="total-compra"><span>Total estimado</span><span>${R(l.total)}</span></div>` : ''}
+    </section>
+    ${l.estimativas.length ? `<p class="small muted" style="margin:0">Temperos e óleo estão cadastrados como estimativa em reais (${l.estimativas.map(x => esc(x.i.nome) + ': ' + R(x.q * custoCruBase(x.i))).join(', ')}), então não entram na lista. Confira o estoque deles antes de sair.</p>` : ''}
+    ${l.itens.length ? `<div class="ferramentas"><button class="btn pri" data-acao="whats-compras">Mandar pelo WhatsApp</button><button class="btn" data-acao="limpar-marcados">Desmarcar tudo</button><button class="btn" data-acao="limpar-compras">Zerar estoque e marmitas a mais</button></div>` : ''}`;
 }
 
 /* ============================================================
@@ -1046,6 +1195,17 @@ MODAIS.whats = {
   rodape: () => '<button class="btn" data-acao="fechar">Fechar</button>'
 };
 
+MODAIS.whatsCompras = {
+  titulo: () => 'Lista de compras',
+  corpo() {
+    rascunho.texto = textoCompras(listaDeCompras());
+    return `<pre class="whats-txt" id="m-texto">${esc(rascunho.texto)}</pre>
+      <div class="ferramentas"><a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(rascunho.texto)}">Abrir no WhatsApp</a><button class="btn" data-acao="copiar">Copiar texto</button></div>
+      <p class="small muted" style="margin:0">O WhatsApp abre para você escolher para quem mandar. Dá para mandar para si mesma e consultar no mercado.</p>`;
+  },
+  rodape: () => '<button class="btn" data-acao="fechar">Fechar</button>'
+};
+
 /* ============================================================
    Ações (cliques)
    ============================================================ */
@@ -1118,6 +1278,11 @@ const ACOES = {
     try { for (const c of db.CustosFixos.filter(x => x.mes === mesDeslocado(filtro.dreMes, -1))) await gravar('CustosFixos', { id: uid('cf'), mes: filtro.dreMes, descricao: c.descricao, valor: num(c.valor) });
       desenhar(); toast('Custos copiados. Ajuste os valores deste mês.'); } catch (e) { falhou(e); }
   },
+  'periodo-compras'(d) { compra.de = d.de; compra.ate = d.ate; guardarCompras(); desenhar(); },
+  'extra-compras'(d) { compra.extras[d.id] = Math.max(0, num(compra.extras[d.id]) + Number(d.d)); guardarCompras(); desenhar(); },
+  'whats-compras'() { abrirModal('whatsCompras', {}); },
+  'limpar-marcados'() { compra.marcados = {}; guardarCompras(); desenhar(); },
+  'limpar-compras'() { compra.extras = {}; compra.estoque = {}; compra.marcados = {}; compra.seguranca = 0; guardarCompras(); desenhar(); toast('Lista zerada'); },
   async 'recomecar-demo'() { demo.recomecar(); await iniciar(); toast('Demonstração reiniciada'); }
 };
 
@@ -1130,6 +1295,12 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalTipo) fecharModal(); });
 
+function definirCompra(caminho, valor) {
+  const [a, b] = caminho.split('.');
+  if (b !== undefined) compra[a][b] = valor; else compra[a] = valor;
+  if (compra.de > compra.ate) compra.ate = compra.de;
+  guardarCompras();
+}
 function lerCampo(el) {
   if (el.type === 'checkbox') return el.checked;
   return el.value;
@@ -1140,6 +1311,10 @@ document.addEventListener('input', e => {
     definir(el.dataset.campo, lerCampo(el));
     if (modalTipo === 'ped' && /^itens\.\d+\.componentes/.test(el.dataset.campo)) rascunho.itens[Number(el.dataset.campo.split('.')[1])]._recalc = true;
     if (!el.dataset.estrutura) atualizarModal();
+  } else if (el.dataset.compra && el.type !== 'checkbox' && el.type !== 'date') {
+    definirCompra(el.dataset.compra, el.value);
+    const pos = el.selectionStart; desenhar();
+    const novo = document.getElementById(el.id); if (novo) { novo.focus(); try { novo.setSelectionRange(pos, pos); } catch (x) { /* ok */ } }
   } else if (el.dataset.filtro && el.type !== 'checkbox' && el.tagName !== 'SELECT') {
     filtro[el.dataset.filtro] = el.value;
     const pos = el.selectionStart; desenhar();
@@ -1158,6 +1333,10 @@ document.addEventListener('change', async e => {
   if (el.dataset.campo && rascunho && el.dataset.estrutura) { definir(el.dataset.campo, lerCampo(el)); desenharModal(); return; }
   if (el.dataset.campo && rascunho && (el.type === 'checkbox' || el.tagName === 'SELECT')) { definir(el.dataset.campo, lerCampo(el)); atualizarModal(); return; }
   if (el.dataset.filtro && (el.type === 'checkbox' || el.tagName === 'SELECT')) { filtro[el.dataset.filtro] = el.type === 'checkbox' ? el.checked : el.value; desenhar(); return; }
+  if (el.dataset.compra && (el.type === 'checkbox' || el.type === 'date')) {
+    if (el.type === 'date' && !el.value) return;
+    definirCompra(el.dataset.compra, el.type === 'checkbox' ? el.checked : el.value); desenhar(); return;
+  }
   if (el.dataset.custoId) {
     const c = db.CustosFixos.find(x => x.id === el.dataset.custoId); if (!c) return;
     const novo = { ...c, [el.dataset.custoCampo]: el.dataset.custoCampo === 'valor' ? num(el.value) : el.value.trim() };
