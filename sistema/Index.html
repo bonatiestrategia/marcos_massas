@@ -7,12 +7,12 @@
 /* Layout: app de cozinha. Cabeçalho fixo com abas (no celular, abas embaixo),
    conteúdo em coluna única de até 1040px, edição sempre em janela sobreposta. */
 :root {
-  --bg: #F2F5F1;
+  --bg: #FFFFFF;
   --surface: #FFFFFF;
-  --surface-2: #E8EEE7;
+  --surface-2: #F1F4F2;
   --ink: #16211A;
   --muted: #5A685F;
-  --line: #D3DCD2;
+  --line: #DCE3DD;
   --accent: #2B6A4C;
   --accent-ink: #FFFFFF;
   --accent-soft: #DAEADF;
@@ -24,27 +24,11 @@
   --font-body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --r: 10px;
   --safe-top: env(safe-area-inset-top, 0px);
+  color-scheme: light;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --gut-l: max(16px, env(safe-area-inset-left, 0px));
   --gut-r: max(16px, env(safe-area-inset-right, 0px));
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0F1511; --surface: #172019; --surface-2: #202B23; --ink: #E4ECE6; --muted: #98A89E;
-    --line: #2C3A30; --accent: #6FC293; --accent-ink: #0B1710; --accent-soft: #1D3828;
-    --ok: #7BCB98; --ok-soft: #1B3224; --warn: #E2B44C; --warn-soft: #382D12; --bad: #EF8A7E; --bad-soft: #3B1E1B;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0F1511; --surface: #172019; --surface-2: #202B23; --ink: #E4ECE6; --muted: #98A89E;
-  --line: #2C3A30; --accent: #6FC293; --accent-ink: #0B1710; --accent-soft: #1D3828;
-  --ok: #7BCB98; --ok-soft: #1B3224; --warn: #E2B44C; --warn-soft: #382D12; --bad: #EF8A7E; --bad-soft: #3B1E1B;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
-  color-scheme: dark;
-}
-
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); -webkit-font-smoothing: antialiased; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: var(--safe-top); z-index: 30; background: var(--surface); }
