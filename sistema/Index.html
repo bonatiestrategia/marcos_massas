@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Tempero da Nonna</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -381,7 +382,7 @@ function mesAtual() { return hoje().slice(0, 7); }
 function mesDeslocado(m, delta) { const [a, b] = m.split('-').map(Number); const d = new Date(a, b - 1 + delta, 1); return d.getFullYear() + '-' + pad(d.getMonth() + 1); }
 function nomeMes(m) { const [a, b] = m.split('-').map(Number); const t = new Date(a, b - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }); return t.charAt(0).toUpperCase() + t.slice(1); }
 function dataBR(d) { if (!d) return ''; const [a, m, dia] = d.split('-'); return dia + '/' + m + '/' + a; }
-const norm = s => String(s || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const norm = s => String(s || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const copia = o => JSON.parse(JSON.stringify(o));
 
 function toast(msg, erro) {
@@ -1165,6 +1166,15 @@ function textoWhats(p) {
   if (p.obs) l.push('', `Obs.: ${p.obs}`);
   return l.join('\n');
 }
+const EH_CELULAR = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+/** Botões para abrir o WhatsApp: no computador, WhatsApp Web; no celular, o aplicativo. */
+function botoesWhats(fone, texto) {
+  const t = encodeURIComponent(texto);
+  const web = `https://web.whatsapp.com/send?${fone ? 'phone=' + fone + '&' : ''}text=${t}`;
+  const app = `https://api.whatsapp.com/send?${fone ? 'phone=' + fone + '&' : ''}text=${t}`;
+  const [pri, rotPri, sec, rotSec] = EH_CELULAR ? [app, 'Abrir no WhatsApp', web, 'Usar WhatsApp Web'] : [web, 'Abrir no WhatsApp Web', app, 'Usar o aplicativo do WhatsApp'];
+  return `<a class="btn pri" target="_blank" rel="noopener" href="${esc(pri)}">${rotPri}</a><button class="btn" data-acao="copiar">Copiar texto</button><a class="btn link" target="_blank" rel="noopener" href="${esc(sec)}">${rotSec}</a>`;
+}
 MODAIS.whats = {
   titulo: () => 'Mensagem do pedido',
   corpo() {
@@ -1173,8 +1183,8 @@ MODAIS.whats = {
     const fone = tel ? (tel.length <= 11 ? '55' + tel : tel) : '';
     rascunho.texto = textoWhats(p);
     return `<pre class="whats-txt" id="m-texto">${esc(rascunho.texto)}</pre>
-      <div class="ferramentas"><a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/${fone}?text=${encodeURIComponent(rascunho.texto)}">Abrir no WhatsApp</a><button class="btn" data-acao="copiar">Copiar texto</button></div>
-      <p class="small muted" style="margin:0">${fone ? 'O WhatsApp abre na conversa com ' + esc(cli.telefone) + ', com a mensagem pronta para enviar.' : 'Este cliente não tem telefone cadastrado: o WhatsApp abre para você escolher o contato.'}</p>`;
+      <div class="ferramentas">${botoesWhats(fone, rascunho.texto)}</div>
+      <p class="small muted" style="margin:0">${fone ? 'O WhatsApp abre na conversa com ' + esc(cli.telefone) + ', com a mensagem pronta para enviar.' : 'Este cliente não tem telefone cadastrado: o WhatsApp abre para você escolher o contato.'}${EH_CELULAR ? '' : ' No computador, o WhatsApp Web precisa estar conectado ao celular (é só ler o QR Code uma vez).'}</p>`;
   },
   rodape: () => '<button class="btn" data-acao="fechar">Fechar</button>'
 };
@@ -1184,7 +1194,7 @@ MODAIS.whatsCompras = {
   corpo() {
     rascunho.texto = textoCompras(listaDeCompras());
     return `<pre class="whats-txt" id="m-texto">${esc(rascunho.texto)}</pre>
-      <div class="ferramentas"><a class="btn pri" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(rascunho.texto)}">Abrir no WhatsApp</a><button class="btn" data-acao="copiar">Copiar texto</button></div>
+      <div class="ferramentas">${botoesWhats('', rascunho.texto)}</div>
       <p class="small muted" style="margin:0">O WhatsApp abre para você escolher para quem mandar. Dá para mandar para si mesma e consultar no mercado.</p>`;
   },
   rodape: () => '<button class="btn" data-acao="fechar">Fechar</button>'
@@ -1247,7 +1257,13 @@ const ACOES = {
   whats(d) { abrirModal('whats', { id: d.id || rascunho.id }); },
   async copiar() {
     try { await navigator.clipboard.writeText(rascunho.texto); toast('Texto copiado'); }
-    catch (e) { const el = document.getElementById('m-texto'); const s = window.getSelection(); const rg = document.createRange(); rg.selectNodeContents(el); s.removeAllRanges(); s.addRange(rg); toast('Texto selecionado. Use copiar do seu aparelho.'); }
+    catch (e) {
+      const ta = document.createElement('textarea'); ta.value = rascunho.texto; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (x) { ok = false; } ta.remove();
+      if (ok) { toast('Texto copiado'); return; }
+      const el = document.getElementById('m-texto'); const s = window.getSelection(); const rg = document.createRange(); rg.selectNodeContents(el); s.removeAllRanges(); s.addRange(rg);
+      toast('Texto selecionado. Aperte Ctrl + C para copiar.');
+    }
   },
   async 'alternar-pago'(d) {
     const p = db.Pedidos.find(x => x.id === d.id);
