@@ -106,7 +106,6 @@ explicitamente **orgânico**.
 |---|---|
 | Anos de operação | `[ANOS_MERCADO]` |
 | Nº de clientes atendidos | `[QTD_CLIENTES]` |
-| Domínio do site | `[DOMINIO]` |
 
 **Proibido em qualquer modelo:** preço, nome de cliente, depoimento, selo, certificação, número de
 unidades vendidas, prazo ou percentual que não venha desta tabela. A prova social **já tem material real**: seis avaliações públicas do Google, transcritas

@@ -7,10 +7,19 @@
    máximo mais uma vez para confirmar, e pare.
    ========================================================================== */
 import { chromium } from 'playwright-core';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readdirSync } from 'node:fs';
 import { resolve, basename, dirname } from 'node:path';
 
 const alvo = process.argv[2];
+
+/* Verificação do Search Console por arquivo: googleXXXXXXXX.html na mesma pasta
+   que a página, que em site publicado é a raiz do domínio. */
+const arquivoSearchConsole = (() => {
+  try {
+    return readdirSync(dirname(resolve(alvo)))
+      .some(f => /^google[0-9a-f]{16}\.html$/i.test(f));
+  } catch { return false; }
+})();
 if (!alvo) { console.error('uso: node blocos/verificar.mjs <caminho/index.html>'); process.exit(1); }
 
 const caminho = resolve(alvo);
@@ -269,7 +278,12 @@ for (const vp of VIEWPORTS) {
   if (!r.dataLayerAposClique) prob('erro', vp.id, 'clique no botão flutuante não empurrou whatsapp_click para o dataLayer');
   else if (r.dataLayerAposClique.ultimo.origem !== 'flutuante') prob('erro', vp.id, `whatsapp_click com origem errada: ${r.dataLayerAposClique.ultimo.origem}`);
   if (!r.dataLayerExiste) prob('erro', vp.id, 'window.dataLayer não existe');
-  if (!r.metaSearchConsole) prob('erro', vp.id, 'meta google-site-verification ausente');
+  /* O Search Console aceita dois métodos: meta tag no <head> ou um arquivo
+     googleXXXX.html servido na raiz. Exigir só a meta reprovava site verificado
+     por arquivo, que é o método que o próprio Google recomenda. */
+  if (!r.metaSearchConsole && !arquivoSearchConsole)
+    prob('erro', vp.id, 'sem verificação do Search Console: nem meta google-site-verification '
+       + 'no <head>, nem arquivo google*.html ao lado da página');
   if (!r.noscriptGtm) prob('erro', vp.id, 'noscript do GTM ausente');
   if (!r.consentAntesDoGtm) prob('erro', vp.id, 'Consent Mode não aparece antes do carregador do GTM');
   if (!r.modoSemGtmComentado) prob('erro', vp.id, 'bloco "modo sem GTM" está ativo — risco de contagem dupla');

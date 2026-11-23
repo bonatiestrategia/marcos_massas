@@ -20,12 +20,10 @@ No `index.html`:
 | Placeholder | Onde pegar | Formato |
 |---|---|---|
 | `GTM-XXXXXXX` | GTM → Admin → ID do contêiner | `GTM-ABC1234` |
-| `[TOKEN_SEARCH_CONSOLE]` | Search Console → propriedade de prefixo de URL → tag HTML | string longa |
 | `G-XXXXXXXXXX` | GA4 → Admin → Fluxos de dados → ID da métrica | só no modo sem GTM |
 | `AW-XXXXXXXXX` | Google Ads → Ferramentas → Conversões | só no modo sem GTM |
 | `[CLARITY_ID]` | Clarity → Settings → Setup | só no modo sem GTM |
 | `[WHATSAPP]` | número com DDI e DDD, só dígitos | `5511999999999` |
-| `[DOMINIO]` | domínio publicado | `marcosmassas.com.br` |
 
 O carregador do GTM detecta o placeholder e **não faz a requisição** enquanto o ID não for real —
 o `dataLayer` continua ativo e os eventos continuam sendo empurrados. Substituiu, funciona.
@@ -33,17 +31,48 @@ o `dataLayer` continua ativo e os eventos continuam sendo empurrados. Substituiu
 Substituição em lote:
 
 ```bash
-cd modelos
-grep -rl 'GTM-XXXXXXX' . | xargs sed -i 's/GTM-XXXXXXX/GTM-SEUID/g'
-grep -rl '\[WHATSAPP\]' . | xargs sed -i 's/\[WHATSAPP\]/5511999999999/g'
+sed -i 's/GTM-XXXXXXX/GTM-SEUID/g' index.html
 ```
 
-## 2. Search Console
+## 2. Search Console — já configurado
 
-1. Adicione a propriedade **prefixo de URL** com o domínio final.
-2. Escolha verificação por **tag HTML** e copie o `content`.
-3. Cole em `[TOKEN_SEARCH_CONSOLE]`. A meta já está no `<head>`.
-4. Publique, verifique, e envie o sitemap quando existir.
+**Propriedade:** `https://www.marcosmassas.com.br/` (prefixo de URL).
+**Método:** arquivo HTML, que é o recomendado pelo Google.
+
+O arquivo **`google2dd807b122c45b74.html`** está na raiz do repositório, com os 53 bytes exatos que
+o Google gerou. Como o site é o `index.html` da raiz, ele é servido em
+`https://www.marcosmassas.com.br/google2dd807b122c45b74.html` assim que o site for publicado.
+
+### O que falta fazer
+
+1. **Publicar o site.** A verificação busca o arquivo pela internet — enquanto não houver nada no ar
+   naquele endereço, clicar em VERIFICAR falha.
+2. **Clicar em VERIFICAR** no Search Console, com a página já publicada.
+3. **Enviar o sitemap** quando existir.
+
+### Três coisas que derrubam a verificação
+
+- **Apagar o arquivo.** O Google revalida de tempos em tempos. O próprio painel avisa: *"para
+  continuar verificado, não remova o arquivo, mesmo após a verificação bem-sucedida."*
+- **"Clean URLs" da hospedagem.** Vercel e Netlify, na configuração padrão, redirecionam
+  `/arquivo.html` para `/arquivo`. O Google busca o `.html`, leva um 301 e reprova — com o arquivo
+  no lugar certo. Desligue o *clean URLs* ou use também a tag HTML (abaixo).
+- **Trocar `www` por raiz.** `www.marcosmassas.com.br` e `marcosmassas.com.br` são propriedades
+  diferentes para o Search Console. A propriedade criada é a com `www`, e o `canonical` da página
+  aponta para ela. Para cobrir as duas de uma vez, o caminho é uma **propriedade de domínio**, que
+  se verifica por DNS e vale para todas as variações.
+
+### Segundo método, opcional
+
+Verificar por dois métodos ao mesmo tempo é mais seguro: se um cair, o outro segura. Para adicionar
+a tag HTML, pegue o `content` em Search Console → Verificar propriedade → **Tag HTML** e acrescente
+no `<head>` do `index.html`:
+
+```html
+<meta name="google-site-verification" content="COLE_O_CONTENT_AQUI">
+```
+
+O token da tag é **diferente** do nome do arquivo — são valores independentes.
 
 ## 3. GTM — as tags a criar
 

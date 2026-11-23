@@ -15,9 +15,15 @@
      Substitua os placeholders conforme CONFIGURACAO-ANALYTICS.md.
      ========================================================================== -->
 
-<!-- 1. Search Console — verificação de propriedade.
-     É meta tag: não passa por gerenciador de tags. -->
-<meta name="google-site-verification" content="[TOKEN_SEARCH_CONSOLE]">
+<!-- 1. Endereço oficial da página.
+     O domínio responde com e sem www e com e sem barra final; sem esta linha o
+     Google pode tratar as variações como páginas diferentes e dividir o sinal.
+     O www aqui bate com a propriedade criada no Search Console.
+
+     A verificação de propriedade NÃO é meta tag: foi feita pelo método de
+     arquivo, com google2dd807b122c45b74.html na raiz do site. Ver
+     CONFIGURACAO-ANALYTICS.md, seção 2. -->
+<link rel="canonical" href="https://www.marcosmassas.com.br/">
 
 <!-- 2. dataLayer e Consent Mode v2.
      Precisa vir ANTES de qualquer tag. O Consent Mode declarado depois do GTM
@@ -107,7 +113,7 @@
   "@type": "FoodEstablishment",
   "name": "Marcos Massas",
   "description": "Fábrica de nhoques, esfihas e salgados para revenda e consumidor final.",
-  "url": "https://[DOMINIO]/",
+  "url": "https://www.marcosmassas.com.br/",
   "telephone": "+55 11 93953-0387",
   "address": {
     "@type": "PostalAddress",

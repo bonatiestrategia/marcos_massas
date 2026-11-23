@@ -131,8 +131,11 @@ na proporção final**. Lista para produção:
 WhatsApp ((11) 93953-0387), endereço completo (Rua Manuel Soares, 4A — Jardim Piratininga, São Paulo/SP, CEP 03716-190),
 horário (segunda a sexta, das 7h às 17h) e CNPJ (32.734.348/0001-07).
 
-**Ainda a preencher:** só os identificadores de medição — `[CLARITY_ID]`, `[DOMINIO]` e
-`[TOKEN_SEARCH_CONSOLE]`. Todo o conteúdo da página está completo.
+**Também já definido:** o domínio — `https://www.marcosmassas.com.br/` — e a verificação do
+Search Console, feita pelo método de arquivo (`google2dd807b122c45b74.html` na raiz).
+
+**Ainda a preencher:** só dois identificadores de medição, `GTM-XXXXXXX` e `[CLARITY_ID]`.
+Todo o conteúdo da página está completo.
 
 Enquanto não vierem, os placeholders ficam visíveis de propósito. Uma landing page de captação com
 prazo ou depoimento inventado não é um rascunho — é um problema jurídico e de reputação.
@@ -161,8 +164,9 @@ O conteúdo está fechado e os dados reais estão na página. Falta:
    fotos serem cacheadas e carregadas sob demanda. É o item de maior impacto da lista.
 2. **Publicar em domínio próprio com HTTPS.** O repositório já está na forma certa para isso: o site
    é o `index.html` da raiz.
-3. **Substituir os IDs de medição** (`GTM-XXXXXXX`, `[CLARITY_ID]`, `[DOMINIO]`,
-   `[TOKEN_SEARCH_CONSOLE]`) e validar no modo de visualização do GTM.
-4. **Verificar a propriedade no Search Console.**
+3. **Substituir os IDs de medição** (`GTM-XXXXXXX` e `[CLARITY_ID]`) e validar no modo de
+   visualização do GTM.
+4. **Clicar em VERIFICAR no Search Console.** O arquivo de verificação já está na raiz; a
+   checagem só passa depois que o site estiver no ar. Ver `CONFIGURACAO-ANALYTICS.md` §2.
 5. **Marcar `whatsapp_click` como conversão principal** no GA4 e importar no Ads.
 6. **Só então subir campanha.** Campanha em página sem conversão configurada gasta sem aprender.
