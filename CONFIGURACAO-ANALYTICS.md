@@ -42,14 +42,14 @@ sed -i 's/GTM-XXXXXXX/GTM-SEUID/g' index.html
 
 O arquivo **`google2dd807b122c45b74.html`** está na raiz do repositório, com os 53 bytes exatos que
 o Google gerou. Como o site é o `index.html` da raiz, ele é servido em
-`https://www.marcosmassas.com.br/google2dd807b122c45b74.html` assim que o site for publicado.
+`https://www.marcosmassas.com.br/google2dd807b122c45b74.html`.
 
 ### O que falta fazer
 
-1. **Enviar o sitemap** quando existir.
-2. **Resolver `www` x domínio raiz** — ver abaixo.
+1. **Adicionar um segundo método de verificação** — ver abaixo. Recomendação do próprio Google.
+2. **Enviar o sitemap** quando existir.
 
-### Três coisas que derrubam a verificação
+### Duas coisas que derrubam a verificação
 
 - **Apagar o arquivo.** O Google revalida de tempos em tempos. O próprio painel avisa: *"para
   continuar verificado, não remova o arquivo, mesmo após a verificação bem-sucedida."*
@@ -57,27 +57,29 @@ o Google gerou. Como o site é o `index.html` da raiz, ele é servido em
   `/arquivo`; aí o Google busca o `.html`, leva um 301 e reprova — com o arquivo no lugar certo.
   **Nesta instalação não ocorre:** testado no ar, a URL com `.html` responde direto. Mas é a
   primeira coisa a conferir se alguém mexer nas configurações da Vercel.
-- **Trocar `www` por raiz.** `www.marcosmassas.com.br` e `marcosmassas.com.br` são propriedades
-  diferentes para o Search Console.
 
-### Pendência conhecida: `www` x domínio raiz
+### `www` x domínio raiz — resolvido e consistente
 
-A propriedade verificada é a com `www`, e o `canonical` da página aponta para ela. Mas abrir a URL
-com `www` no navegador termina no domínio **sem** `www` — ou seja, a Vercel redireciona um para o
-outro. A verificação passou mesmo assim (o Google seguiu o redirecionamento), mas **o `canonical`
-pode estar apontando para o endereço errado**: se o site serve de fato na raiz, dizer que o
-endereço oficial é o `www` manda o Google para uma URL que devolve de volta.
+Confirmado no painel da Vercel: **`www.marcosmassas.com.br` é o domínio de produção**, e
+`marcosmassas.com.br` responde com **308** redirecionando para ele. Tudo aponta para o mesmo
+endereço:
 
-**Para resolver, confira qual é o endereço real** em Vercel → Settings → Domains: um dos dois fica
-marcado como primário e o outro como redirecionamento. Então:
+| Onde | Valor |
+|---|---|
+| Domínio de produção na Vercel | `www.marcosmassas.com.br` |
+| Propriedade no Search Console | `https://www.marcosmassas.com.br/` |
+| `canonical` do `index.html` | `https://www.marcosmassas.com.br/` |
+| `url` do JSON-LD | `https://www.marcosmassas.com.br/` |
 
-- Se o primário for a **raiz**: trocar o `canonical` do `index.html` para
-  `https://marcosmassas.com.br/`, e trocar também a `url` do JSON-LD.
-- Se o primário for **`www`**: está tudo certo como está.
+Como o redirecionamento é 308 (permanente), o Google consolida os sinais no `www` sozinho.
 
-**Melhor ainda:** criar uma **propriedade de domínio** no Search Console. Verifica-se por registro
-TXT no DNS (que está no Registro.br) e cobre todas as variações de uma vez — com `www`, sem `www`,
-`http` e `https` —, em vez de dividir os dados entre duas propriedades.
+> **Cuidado ao diagnosticar isto no navegador:** o Chrome **esconde o `www.`** na barra de endereço.
+> Uma URL que parece estar na raiz pode estar no `www`. Para ver o endereço real, clique na barra
+> (ele se expande) ou confira no painel da Vercel, que é a fonte da verdade.
+
+*Opcional, não urgente:* uma **propriedade de domínio** no Search Console, verificada por TXT no
+DNS, cobriria `www`, raiz, `http` e `https` num relatório só. Com o 308 no lugar, isso deixou de
+resolver um problema e passou a ser só conveniência.
 
 ### Segundo método, opcional
 
