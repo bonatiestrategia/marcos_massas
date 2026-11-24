@@ -45,7 +45,24 @@ for (const vp of VIEWPORTS) {
   });
   const page = await ctx.newPage();
   const erros = [];
-  page.on('console', m => { if (m.type() === 'error') erros.push('console: ' + m.text().slice(0, 200)); });
+  const redeBloqueada = [];
+
+  /* Hosts de medição que o sandbox não alcança. Falha de rede para eles é
+     limitação do ambiente, não defeito da página: no servidor de verdade
+     carregam. Qualquer outro host continua contando como erro. */
+  const HOSTS_MEDICAO = /googletagmanager\.com|google-analytics\.com|clarity\.ms|googleadservices\.com/;
+  page.on('requestfailed', r => {
+    if (HOSTS_MEDICAO.test(r.url())) redeBloqueada.push(r.url());
+    else erros.push('rede: ' + r.url().slice(0, 120) + ' — ' + (r.failure()?.errorText || 'falhou'));
+  });
+  page.on('console', m => {
+    if (m.type() !== 'error') return;
+    const t = m.text();
+    /* "Failed to load resource" não diz qual recurso; só se descarta quando o
+       único que falhou foi um host de medição. */
+    if (/Failed to load resource/i.test(t) && redeBloqueada.length) return;
+    erros.push('console: ' + t.slice(0, 200));
+  });
   page.on('pageerror', e => erros.push('pageerror: ' + String(e).slice(0, 200)));
 
   await page.goto('file://' + caminho, { waitUntil: 'load' });
@@ -64,10 +81,18 @@ for (const vp of VIEWPORTS) {
     res.eventosIniciais = (window.dataLayer || []).map(x => x && x.event).filter(Boolean);
     res.metaSearchConsole = !!document.querySelector('meta[name="google-site-verification"]');
     res.noscriptGtm = !!document.querySelector('noscript');
-    const html = doc.outerHTML;
-    const iConsent = html.indexOf("'consent', 'default'") >= 0 ? html.indexOf("'consent', 'default'") : html.indexOf('"consent"');
-    const iGtmSrc = html.indexOf('googletagmanager.com/gtm.js');
-    res.consentAntesDoGtm = iConsent > -1 && iGtmSrc > -1 && iConsent < iGtmSrc;
+    /* O Consent Mode precisa ser declarado ANTES de o GTM iniciar. Medir isso
+       pela posição do texto no DOM dá falso negativo assim que o ID vira real:
+       o snippet oficial insere o <script> do gtm.js ANTES do primeiro script da
+       página, então ele passa a aparecer acima do bloco de consentimento no
+       HTML serializado — ainda que tenha executado depois.
+       O que importa é a ordem de execução, e ela está no dataLayer. */
+    const dl = window.dataLayer || [];
+    const pos = nome => dl.findIndex(x => x && x.event === nome);
+    const iConsentDL = pos('consent_default_definido');
+    const iGtmDL = pos('gtm.js');
+    res.consentAntesDoGtm = iConsentDL > -1 && (iGtmDL === -1 || iConsentDL < iGtmDL);
+    res.gtmIniciou = iGtmDL > -1;
     res.modoSemGtmComentado = !document.querySelector('script[src*="gtag/js"]') && !document.querySelector('script[src*="clarity.ms"]');
 
     /* --- overflow horizontal ---------------------------------------------
@@ -262,6 +287,7 @@ for (const vp of VIEWPORTS) {
 
   /* --- triagem ----------------------------------------------------------- */
   if (erros.length) prob('erro', vp.id, `${erros.length} erro(s) de console/página: ${erros.slice(0, 3).join(' | ')}`);
+  r.redeMedicaoBloqueada = redeBloqueada;
   if (r.overflowH) prob('erro', vp.id, `scroll horizontal (${r.larguraDoc}px > ${r.larguraJanela}px). Culpados: ${r.culpadosOverflow.join(', ')}`);
   if (r.contrasteFalhas.length) prob('erro', vp.id, `${r.contrasteFalhas.length} combinação(ões) de contraste abaixo do mínimo: ` + r.contrasteFalhas.map(f => `"${f.texto}" ${f.ratio}:1 (min ${f.minimo}) ${f.cor} sobre ${f.fundo}`).join(' | '));
   if (vp.id === 'mobile' && r.alvosPequenos.length) prob('aviso', vp.id, `${r.alvosPequenos.length} alvo(s) abaixo de 44px: ` + r.alvosPequenos.slice(0, 5).map(a => `${a.el} "${a.texto}" ${a.w}x${a.h}`).join(', '));

@@ -13,26 +13,34 @@ está comentado — ele é a alternativa para quem **não** vai usar GTM, nunca 
 O Search Console fica de fora dessa regra: verificação de propriedade é meta tag no `<head>`, não
 passa por gerenciador de tags.
 
-## 1. Substituir os placeholders
+## 1. Placeholders
 
-No `index.html`:
+### Já preenchidos
 
-| Placeholder | Onde pegar | Formato |
-|---|---|---|
-| `GTM-XXXXXXX` | GTM → Admin → ID do contêiner | `GTM-ABC1234` |
-| `G-XXXXXXXXXX` | GA4 → Admin → Fluxos de dados → ID da métrica | só no modo sem GTM |
-| `AW-XXXXXXXXX` | Google Ads → Ferramentas → Conversões | só no modo sem GTM |
-| `[CLARITY_ID]` | Clarity → Settings → Setup | só no modo sem GTM |
-| `[WHATSAPP]` | número com DDI e DDD, só dígitos | `5511999999999` |
+| O quê | Valor |
+|---|---|
+| Contêiner do GTM | **`GTM-N66FVFHZ`** — instalado em 24/11/2026 |
+| WhatsApp | `5511939530387` |
+| Domínio | `https://www.marcosmassas.com.br/` |
 
-O carregador do GTM detecta o placeholder e **não faz a requisição** enquanto o ID não for real —
-o `dataLayer` continua ativo e os eventos continuam sendo empurrados. Substituiu, funciona.
+### Os que restam — e por que não são urgentes
 
-Substituição em lote:
+| Placeholder | Onde é usado |
+|---|---|
+| `G-XXXXXXXXXX` | só no bloco "modo sem GTM", que está comentado |
+| `AW-XXXXXXXXX` | só no bloco "modo sem GTM", que está comentado |
+| `[CLARITY_ID]` | só no bloco "modo sem GTM", que está comentado |
 
-```bash
-sed -i 's/GTM-XXXXXXX/GTM-SEUID/g' index.html
-```
+**Os três estão dentro de um bloco comentado e não afetam a página.** Com o GTM ativo, o GA4, o
+Google Ads e o Clarity entram como **tags dentro do contêiner** (seção 3), não como scripts na
+página. Preencher esses placeholders só faria sentido se o GTM fosse abandonado — e aí o bloco 3 do
+`<head>` teria que sair junto, senão tudo conta em dobro.
+
+### Como o carregador se comporta
+
+O carregador do GTM detecta um ID ainda em placeholder (`GTM-XXXX...`) e **não faz a requisição**:
+o `dataLayer` segue ativo, os eventos seguem sendo empurrados, e nenhuma requisição quebrada
+aparece no console. Com o ID real, ele injeta o script normalmente.
 
 ## 2. Search Console — VERIFICADO
 

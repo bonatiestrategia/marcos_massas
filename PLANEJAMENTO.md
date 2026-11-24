@@ -134,7 +134,7 @@ horário (segunda a sexta, das 7h às 17h) e CNPJ (32.734.348/0001-07).
 **Também já definido:** o domínio — `https://www.marcosmassas.com.br/` — e a verificação do
 Search Console, feita pelo método de arquivo (`google2dd807b122c45b74.html` na raiz).
 
-**Ainda a preencher:** só dois identificadores de medição, `GTM-XXXXXXX` e `[CLARITY_ID]`.
+**Ainda a preencher:** nada no HTML. O que falta é configuração dentro do painel do GTM.
 Todo o conteúdo da página está completo.
 
 Enquanto não vierem, os placeholders ficam visíveis de propósito. Uma landing page de captação com
@@ -164,8 +164,9 @@ O conteúdo está fechado e os dados reais estão na página. Falta:
    fotos serem cacheadas e carregadas sob demanda. É o item de maior impacto da lista.
 2. ~~**Publicar em domínio próprio com HTTPS.**~~ **Feito:** Vercel publicando o branch padrão
    do repositório, com o DNS no Registro.br, em `marcosmassas.com.br`.
-3. **Substituir os IDs de medição** (`GTM-XXXXXXX` e `[CLARITY_ID]`) e validar no modo de
-   visualização do GTM.
+3. ~~**Substituir os IDs de medição.**~~ **Contêiner `GTM-N66FVFHZ` instalado em 24/11/2026.**
+   Falta **validar no modo de visualização do GTM**, com o site no ar, e criar as tags de GA4,
+   Ads e Clarity dentro do contêiner.
 4. ~~**Verificar a propriedade no Search Console.**~~ **Feito em 24/11/2026**, pelo método de
    arquivo. Ver `CONFIGURACAO-ANALYTICS.md` §2.
 5. **Marcar `whatsapp_click` como conversão principal** no GA4 e importar no Ads.

@@ -69,7 +69,7 @@
 (function(w,d,s,l,i){
   if (!i || /^GTM-X+$/i.test(i)) {
     w[l] = w[l] || [];
-    w[l].push({ event: 'gtm_nao_configurado', aviso: 'Substitua GTM-XXXXXXX pelo ID real do contêiner.' });
+    w[l].push({ event: 'gtm_nao_configurado', aviso: 'ID do contêiner ausente ou ainda em placeholder.' });
     if (w.console && console.info) console.info('[medição] GTM ainda não configurado — dataLayer ativo, contêiner não carregado.');
     return;
   }
@@ -81,7 +81,7 @@
   j.async = true;
   j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
   f.parentNode.insertBefore(j, f);
-})(window, document, 'script', 'dataLayer', 'GTM-XXXXXXX');
+})(window, document, 'script', 'dataLayer', 'GTM-N66FVFHZ');
 </script>
 
 <!-- 4. MODO SEM GTM — alternativa, desligada por padrão.
@@ -876,7 +876,7 @@ html { scroll-behavior: smooth; }
 <body id="topo">
 <!-- Cole VERBATIM como primeiro elemento depois da abertura do <body>.
      Só entra em ação quando o JavaScript está desligado. -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N66FVFHZ"
   height="0" width="0" style="display:none;visibility:hidden"
   title="Google Tag Manager"></iframe></noscript>
 
