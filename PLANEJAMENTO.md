@@ -162,11 +162,11 @@ O conteúdo está fechado e os dados reais estão na página. Falta:
 1. **Trocar os base64 por arquivos de imagem.** As sete fotos estão embutidas dentro do HTML, o que
    deixa a página em 1,6 MB. Referenciar `imagens/*.webp` derruba o HTML para ~60 KB e deixa as
    fotos serem cacheadas e carregadas sob demanda. É o item de maior impacto da lista.
-2. **Publicar em domínio próprio com HTTPS.** O repositório já está na forma certa para isso: o site
-   é o `index.html` da raiz.
+2. ~~**Publicar em domínio próprio com HTTPS.**~~ **Feito:** Vercel publicando o branch padrão
+   do repositório, com o DNS no Registro.br, em `marcosmassas.com.br`.
 3. **Substituir os IDs de medição** (`GTM-XXXXXXX` e `[CLARITY_ID]`) e validar no modo de
    visualização do GTM.
-4. **Clicar em VERIFICAR no Search Console.** O arquivo de verificação já está na raiz; a
-   checagem só passa depois que o site estiver no ar. Ver `CONFIGURACAO-ANALYTICS.md` §2.
+4. ~~**Verificar a propriedade no Search Console.**~~ **Feito em 24/11/2026**, pelo método de
+   arquivo. Ver `CONFIGURACAO-ANALYTICS.md` §2.
 5. **Marcar `whatsapp_click` como conversão principal** no GA4 e importar no Ads.
 6. **Só então subir campanha.** Campanha em página sem conversão configurada gasta sem aprender.

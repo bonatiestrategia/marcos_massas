@@ -34,10 +34,11 @@ Substituição em lote:
 sed -i 's/GTM-XXXXXXX/GTM-SEUID/g' index.html
 ```
 
-## 2. Search Console — já configurado
+## 2. Search Console — VERIFICADO
 
 **Propriedade:** `https://www.marcosmassas.com.br/` (prefixo de URL).
-**Método:** arquivo HTML, que é o recomendado pelo Google.
+**Método:** arquivo HTML. **Verificado em 24/11/2026.**
+**Hospedagem:** Vercel, publicando o branch padrão do repositório. DNS no Registro.br.
 
 O arquivo **`google2dd807b122c45b74.html`** está na raiz do repositório, com os 53 bytes exatos que
 o Google gerou. Como o site é o `index.html` da raiz, ele é servido em
@@ -45,22 +46,38 @@ o Google gerou. Como o site é o `index.html` da raiz, ele é servido em
 
 ### O que falta fazer
 
-1. **Publicar o site.** A verificação busca o arquivo pela internet — enquanto não houver nada no ar
-   naquele endereço, clicar em VERIFICAR falha.
-2. **Clicar em VERIFICAR** no Search Console, com a página já publicada.
-3. **Enviar o sitemap** quando existir.
+1. **Enviar o sitemap** quando existir.
+2. **Resolver `www` x domínio raiz** — ver abaixo.
 
 ### Três coisas que derrubam a verificação
 
 - **Apagar o arquivo.** O Google revalida de tempos em tempos. O próprio painel avisa: *"para
   continuar verificado, não remova o arquivo, mesmo após a verificação bem-sucedida."*
-- **"Clean URLs" da hospedagem.** Vercel e Netlify, na configuração padrão, redirecionam
-  `/arquivo.html` para `/arquivo`. O Google busca o `.html`, leva um 301 e reprova — com o arquivo
-  no lugar certo. Desligue o *clean URLs* ou use também a tag HTML (abaixo).
+- **"Clean URLs" da hospedagem.** Vercel e Netlify podem redirecionar `/arquivo.html` para
+  `/arquivo`; aí o Google busca o `.html`, leva um 301 e reprova — com o arquivo no lugar certo.
+  **Nesta instalação não ocorre:** testado no ar, a URL com `.html` responde direto. Mas é a
+  primeira coisa a conferir se alguém mexer nas configurações da Vercel.
 - **Trocar `www` por raiz.** `www.marcosmassas.com.br` e `marcosmassas.com.br` são propriedades
-  diferentes para o Search Console. A propriedade criada é a com `www`, e o `canonical` da página
-  aponta para ela. Para cobrir as duas de uma vez, o caminho é uma **propriedade de domínio**, que
-  se verifica por DNS e vale para todas as variações.
+  diferentes para o Search Console.
+
+### Pendência conhecida: `www` x domínio raiz
+
+A propriedade verificada é a com `www`, e o `canonical` da página aponta para ela. Mas abrir a URL
+com `www` no navegador termina no domínio **sem** `www` — ou seja, a Vercel redireciona um para o
+outro. A verificação passou mesmo assim (o Google seguiu o redirecionamento), mas **o `canonical`
+pode estar apontando para o endereço errado**: se o site serve de fato na raiz, dizer que o
+endereço oficial é o `www` manda o Google para uma URL que devolve de volta.
+
+**Para resolver, confira qual é o endereço real** em Vercel → Settings → Domains: um dos dois fica
+marcado como primário e o outro como redirecionamento. Então:
+
+- Se o primário for a **raiz**: trocar o `canonical` do `index.html` para
+  `https://marcosmassas.com.br/`, e trocar também a `url` do JSON-LD.
+- Se o primário for **`www`**: está tudo certo como está.
+
+**Melhor ainda:** criar uma **propriedade de domínio** no Search Console. Verifica-se por registro
+TXT no DNS (que está no Registro.br) e cobre todas as variações de uma vez — com `www`, sem `www`,
+`http` e `https` —, em vez de dividir os dados entre duas propriedades.
 
 ### Segundo método, opcional
 
